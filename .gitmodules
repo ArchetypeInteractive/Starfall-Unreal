@@ -1,0 +1,3 @@
+[submodule "Plugins/Nakama"]
+	path = Plugins/Nakama
+	url = git@github.com:heroiclabs/nakama-unreal.git
