@@ -62,8 +62,8 @@ void UNakamaSubsystem::AuthenticatePlayer()
 			AuthenticationErrorDelegate
 		);
 		
-		AuthenticationSuccessDelegate.AddDynamic(this, &UNakamaSubsystem::OnAuthenticationSuccess);
-		AuthenticationErrorDelegate.AddDynamic(this, &UNakamaSubsystem::OnAuthenticationError);
+		//	AuthenticationSuccessDelegate.AddDynamic(this, &UNakamaSubsystem::OnAuthenticationSuccess);
+		//	AuthenticationErrorDelegate.AddDynamic(this, &UNakamaSubsystem::OnAuthenticationError);
 
 	}
 	else {
@@ -74,12 +74,16 @@ void UNakamaSubsystem::AuthenticatePlayer()
 
 
 
-void UNakamaSubsystem::OnAuthenticationSuccess(UNakamaSession* Session)
+void UNakamaSubsystem::ConnectToRealtimeClient(UNakamaSession* Session)
 {
 	UE_LOG(LogTemp, Display, TEXT("Player is authenticated"));
-}
 
-void UNakamaSubsystem::OnAuthenticationError(const FNakamaError& Error)
-{
-	UE_LOG(LogTemp, Display, TEXT("cannot authenticate"));
+	//	Update our session to the passed thru input
+	NakamaSession = Session;
+
+
+	NakamaRtClient = NakamaClient->SetupRealtimeClient();
+
+	bool bCreateStatus = true;
+	NakamaRtClient->Connect(NakamaSession, bCreateStatus, RealtimeClientConnectionSuccessDelegate, RealtimeClientConnectionErrorDelegate);
 }

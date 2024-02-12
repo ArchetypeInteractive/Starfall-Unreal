@@ -23,7 +23,7 @@
 
 
 
-UCLASS()
+UCLASS(BlueprintType)
 class STARFALL_API UNakamaSubsystem : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
@@ -47,21 +47,24 @@ public:
 	FOnAuthUpdate AuthenticationSuccessDelegate;
 
 
-	void OnAuthenticationSuccess(UNakamaSession* Session);
-	void OnAuthenticationError(const FNakamaError& Error);
 
+
+
+	UPROPERTY(BlueprintAssignable, Category = "Character")
+	FOnRealtimeClientConnected RealtimeClientConnectionSuccessDelegate;
+
+	UPROPERTY(BlueprintAssignable, Category = "Character")
+	FOnRealtimeClientConnectionError RealtimeClientConnectionErrorDelegate;
+
+
+	UFUNCTION(BlueprintCallable)
+	void ConnectToRealtimeClient(UNakamaSession* Session);
 
 
 
 
 
 	/*
-	UPROPERTY(BlueprintAssignable, Category = "Character")
-	FOnRealtimeClientConnected ConnectionSuccessDelegate;
-
-	UPROPERTY(BlueprintAssignable, Category = "Character")
-	FOnRealtimeClientConnectionError ConnectionErrorDelegate;
-
 	UFUNCTION(BlueprintCallable)
 	void OnRealtimeClientConnectSuccess();
 
@@ -84,7 +87,7 @@ public:
 
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Nakama")
-	UNakamaSession* PlayerSession;
+	UNakamaSession* NakamaSession;
 	//	UNakamaSession* GetNakamaSession() const { return Session; };
 
 
@@ -94,7 +97,7 @@ public:
 
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Nakama")
-	UNakamaRealtimeClient* PlayerRtClient;
+	UNakamaRealtimeClient* NakamaRtClient;
 	//	UNakamaRealtimeClient* GetRtClient() const { return RtClient; };
 
 
