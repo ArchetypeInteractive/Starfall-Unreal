@@ -69,7 +69,7 @@ public:
 
 
 
-    void AddQuest(const FQuestData& NewQuest);
+    void AddQuest(const FQuestData& NewQuest );
     void UpdateQuestObjective(const FString& QuestID, const FString& ObjectiveDescription, int32 ProgressAmount);
     void DiscardQuest(const FQuestData& Quest);
 

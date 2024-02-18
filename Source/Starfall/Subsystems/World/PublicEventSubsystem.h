@@ -12,6 +12,6 @@
 UCLASS()
 class STARFALL_API UPublicEventSubsystem : public UWorldSubsystem
 {
-	GENERATED_BODY()
-	
+    GENERATED_BODY()
+
 };
