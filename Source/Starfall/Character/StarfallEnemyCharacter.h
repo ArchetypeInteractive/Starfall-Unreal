@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "StarfallCharacter.h"
+#include "GameplayTagContainer.h"
 #include "StarfallEnemyCharacter.generated.h"
 
 /**
@@ -14,4 +15,13 @@ class STARFALL_API AStarfallEnemyCharacter : public AStarfallCharacter
 {
 	GENERATED_BODY()
 	
+public:
+	AStarfallEnemyCharacter();
+
+
+
+
+
+
+	virtual void BeginPlay() override;
 };

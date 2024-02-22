@@ -59,7 +59,7 @@ void UUserInterfaceWindow::NativeConstruct()
 
 
 
-
+	/*
 	//	Create and set MainOverlay as the RootWidget
 	MainOverlay = WidgetTree->ConstructWidget<UOverlay>(UOverlay::StaticClass());
 	MainOverlay->SetVisibility(ESlateVisibility::Visible);
@@ -146,6 +146,7 @@ void UUserInterfaceWindow::NativeConstruct()
 
 
 	LogWidgetHierarchy(WidgetTree->RootWidget, Depth);
+	*/
 	UE_LOG(LogTemp, Display, TEXT("Fucker"));
 }
 

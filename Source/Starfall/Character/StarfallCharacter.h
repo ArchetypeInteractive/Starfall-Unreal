@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "GameplayTagContainer.h"
 #include "Logging/LogMacros.h"
 #include "StarfallCharacter.generated.h"
 
@@ -46,6 +47,14 @@ class AStarfallCharacter : public ACharacter
 
 public:
 	AStarfallCharacter();
+
+	// Gameplay Tag Container for this actor
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameplayTags")
+	FGameplayTagContainer ActorTags;
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Props")
+	FGameplayTag MyTag;
 	
 
 protected:

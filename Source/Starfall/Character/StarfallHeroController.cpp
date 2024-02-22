@@ -26,16 +26,16 @@ void AStarfallHeroController::BeginPlay()
     // 
     // 
     //  Access the Game Instance
-    UGameInstance* GameInstance = GetGameInstance();
-    if (GameInstance != nullptr)
-    {
-        // Replace 'YourUserInterfaceSubsystem' with the actual name of your subsystem class
-        // And replace 'GetSubsystem<YourUserInterfaceSubsystem>()' with the correct method to get your subsystem
-        UUserInterfaceSubsystem* UISubsystem = GameInstance->GetSubsystem<UUserInterfaceSubsystem>();
-        if (UISubsystem != nullptr)
-        {
-            // Now you can call any public method on your UI subsystem, like the event to mount the UI
-            UISubsystem->CreateAndDisplayUI();
-        }
-    }
+    //  UGameInstance* GameInstance = GetGameInstance();
+    //  if (GameInstance != nullptr)
+    //  {
+    //      // Replace 'YourUserInterfaceSubsystem' with the actual name of your subsystem class
+    //      // And replace 'GetSubsystem<YourUserInterfaceSubsystem>()' with the correct method to get your subsystem
+    //      UUserInterfaceSubsystem* UISubsystem = GameInstance->GetSubsystem<UUserInterfaceSubsystem>();
+    //      if (UISubsystem != nullptr)
+    //      {
+    //          // Now you can call any public method on your UI subsystem, like the event to mount the UI
+    //          UISubsystem->CreateAndDisplayUI();
+    //      }
+    //  }
 }
