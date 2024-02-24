@@ -2,7 +2,7 @@
 
 
 #include "StarfallHeroController.h"
-#include "../Subsystems/Game Instance/UserInterfaceSubsystem.h"
+#include "Starfall/Game/Instance/UI/UserInterfaceSubsystem.h"
 
 AStarfallHeroController::AStarfallHeroController()
 {

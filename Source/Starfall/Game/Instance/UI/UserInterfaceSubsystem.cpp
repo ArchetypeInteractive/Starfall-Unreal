@@ -2,7 +2,7 @@
 
 
 #include "UserInterfaceSubsystem.h"
-#include "../../Character/StarfallHeroController.h" // Adjust the include path to your player controller
+#include "Starfall/Character/Hero/StarfallHeroController.h" // Adjust the include path to your player controller
 #include "Kismet/GameplayStatics.h"
 #include "Engine/World.h"
 #include "UObject/ConstructorHelpers.h"

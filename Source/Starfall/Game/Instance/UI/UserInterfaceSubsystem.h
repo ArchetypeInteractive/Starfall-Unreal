@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Subsystems/GameInstanceSubsystem.h"
-#include "UI/UserInterfaceWindow.h"
+#include "UserInterfaceWindow.h"
 #include "Blueprint/UserWidget.h"
 #include "UserInterfaceSubsystem.generated.h"
 

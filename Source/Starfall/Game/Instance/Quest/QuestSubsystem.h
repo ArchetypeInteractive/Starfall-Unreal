@@ -2,7 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Subsystems/GameInstanceSubsystem.h"
-#include "NakamaSubsystem.h"
+#include "Starfall/Game/Instance/Nakama/NakamaSubsystem.h"
 #include "NakamaUnreal.h"
 #include "NakamaClient.h"
 #include "NakamaSession.h"

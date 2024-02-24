@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "StarfallCharacter.h"
+#include "Starfall/Character/StarfallCharacter.h"
 #include "StarfallVendorCharacter.generated.h"
 
 /**

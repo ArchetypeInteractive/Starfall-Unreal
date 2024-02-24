@@ -2,7 +2,6 @@
 
 
 #include "UserInterfaceWindow.h"
-#include "../../../Character/StarfallHeroController.h"
 #include "Components/OverlaySlot.h"
 
 
