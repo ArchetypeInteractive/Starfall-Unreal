@@ -37,7 +37,6 @@ void UUserInterfaceSubsystem::CreateAndDisplayUI()
         {
             UE_LOG(LogTemp, Display, TEXT("Setting up UI Window"));
             UIWindow->AddToViewport();
-
             OnWindowUILoadSuccess.Broadcast();
         }
         else {

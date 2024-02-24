@@ -7,13 +7,9 @@
 
 
 
-
-
 UUserInterfaceWindow::UUserInterfaceWindow(const FObjectInitializer& ObjectInitializer)
 {
 	UE_LOG(LogTemp, Display, TEXT("User Interface Window class"))
-
-
 }
 
 
@@ -21,42 +17,26 @@ void UUserInterfaceWindow::RegisterLayer(UCommonActivatableWidgetStack* Layer, F
 {
 
 	UE_LOG(LogTemp, Warning, TEXT("Registering layer with tag: %s"), *Tag.ToString());
-	if (!Layer)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Layer is null!"));
-		return;
-	}
-
-
-
+	if (!Layer) return;		//	If layer is invalid, exit early
+	
 	if (!UITagContainer.HasTag(Tag))
 	{
-
 		FUIWidgetLayer NewRegistration;
 		NewRegistration.Layer = Layer;
 		NewRegistration.Tag = Tag;
 		UILayers.Add(NewRegistration);
 
+		//	------------------------
 
 		UITagContainer.AddTag(Tag);
 	}
 }
 
-
-
-
-
 void UUserInterfaceWindow::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-
-
-
 	// Use RootWidget as needed
-
-
-
 
 
 	/*
@@ -147,7 +127,6 @@ void UUserInterfaceWindow::NativeConstruct()
 
 	LogWidgetHierarchy(WidgetTree->RootWidget, Depth);
 	*/
-	UE_LOG(LogTemp, Display, TEXT("Fucker"));
 }
 
 

@@ -3,6 +3,7 @@
 #include "StarfallCharacter.h"
 #include "Engine/LocalPlayer.h"
 #include "Camera/CameraComponent.h"
+#include "AbilitySystemComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -10,6 +11,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
+#include "GameplayAbilities/Grenade.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -20,7 +22,7 @@ AStarfallCharacter::AStarfallCharacter()
 {
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
-		
+	AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
 
 
 	// Configure character movement
@@ -63,6 +65,8 @@ void AStarfallCharacter::BeginPlay()
 		{
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
+
+		SetupAbilitySystem();
 	}
 }
 
@@ -83,6 +87,8 @@ void AStarfallCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AStarfallCharacter::Look);
+		
+		EnhancedInputComponent->BindAction(GrenadeAction, ETriggerEvent::Started, this, &AStarfallCharacter::ThrowGrenade);
 	}
 	else
 	{
@@ -110,6 +116,9 @@ void AStarfallCharacter::Move(const FInputActionValue& Value)
 		// add movement 
 		AddMovementInput(ForwardDirection, MovementVector.Y);
 		AddMovementInput(RightDirection, MovementVector.X);
+
+
+		OnCharacterMoved.Broadcast();
 	}
 }
 
@@ -123,5 +132,34 @@ void AStarfallCharacter::Look(const FInputActionValue& Value)
 		// add yaw and pitch input to controller
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
+		OnCharacterLooked.Broadcast();
+	}
+}
+
+
+
+
+
+void AStarfallCharacter::SetupAbilitySystem()
+{
+	if (AbilitySystemComponent)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Setting up ability system!"))
+		//	// Set up ability system component replication
+		//	AbilitySystemComponent->SetIsReplicated(true);
+		//	AbilitySystemComponent->InitAbilityActorInfo(this, this);
+	}
+	else {
+		UE_LOG(LogTemp, Error, TEXT("No ability system"))
+	}
+}
+
+
+void AStarfallCharacter::ThrowGrenade()
+{
+	if (AbilitySystemComponent)
+	{
+		//	if (UGameplayAbility* Grenade = UGameplayAbility::StaticClass()->GetDefaultObject<UGrenade>())
+		UE_LOG(LogTemp, Display, TEXT("Throwing Grenade!"));
 	}
 }

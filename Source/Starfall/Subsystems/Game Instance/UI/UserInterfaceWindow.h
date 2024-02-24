@@ -17,7 +17,9 @@
 
 
 
-
+//  --------------------------------------------------------------------
+//  
+//  --------------------------------------------------------------------
 USTRUCT(BlueprintType)
 struct FUIWidgetLayer
 {
@@ -26,6 +28,7 @@ struct FUIWidgetLayer
 public:
     UPROPERTY(BlueprintReadWrite, Category = "UI Window")
     UCommonActivatableWidgetStack* Layer;
+
 
     UPROPERTY(BlueprintReadWrite, Category = "UI Window")
     FGameplayTag Tag;
@@ -36,8 +39,10 @@ public:
 
 
 
-
-UCLASS()
+//  --------------------------------------------------------------------
+//  
+//  --------------------------------------------------------------------
+UCLASS(Blueprintable)
 class STARFALL_API UUserInterfaceWindow : public UCommonUserWidget
 {
 	GENERATED_BODY()
@@ -45,6 +50,11 @@ class STARFALL_API UUserInterfaceWindow : public UCommonUserWidget
 
 public:
 	UUserInterfaceWindow(const FObjectInitializer& ObjectInitializer);
+
+    //  EVENTS ---------------------------------------------------------
+
+
+    //  FOnRegisteredLayerDelegate* OnRegisteredLayer;
 
 
 
@@ -85,6 +95,8 @@ public:
 
     virtual void NativeConstruct() override;
 
+
+    UFUNCTION(BlueprintCallable)
     void RegisterLayer(UCommonActivatableWidgetStack* Layer, FGameplayTag Tag);
 
     //  UFUNCTION(BlueprintCallable, Category = "UI")

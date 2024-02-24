@@ -10,7 +10,8 @@
 			"LoadingPhase": "Default",
 			"AdditionalDependencies": [
 				"Engine",
-				"CommonUI"
+				"CommonUI",
+				"GameplayAbilities"
 			]
 		}
 	],
@@ -28,6 +29,10 @@
 		},
 		{
 			"Name": "CommonUI",
+			"Enabled": true
+		},
+		{
+			"Name": "GameplayAbilities",
 			"Enabled": true
 		}
 	]

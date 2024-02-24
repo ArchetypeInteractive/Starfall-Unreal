@@ -14,4 +14,8 @@ class STARFALL_API AStarfallVendorCharacter : public AStarfallCharacter
 {
 	GENERATED_BODY()
 	
+public:
+	AStarfallVendorCharacter();
+
+	virtual void BeginPlay() override;
 };

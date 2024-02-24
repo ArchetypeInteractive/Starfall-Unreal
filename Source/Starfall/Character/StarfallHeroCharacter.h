@@ -32,10 +32,17 @@ class STARFALL_API AStarfallHeroCharacter : public AStarfallCharacter
 	UCameraComponent* FollowCamera;
 
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Radar, meta = (AllowPrivateAccess = "true"))
+	URadarComponent* Radar;
 
 public:
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+
+	URadarComponent* GetRadarComponent() const
+	{
+		return Cast<URadarComponent>(GetComponentByClass(URadarComponent::StaticClass()));
+	}
 };

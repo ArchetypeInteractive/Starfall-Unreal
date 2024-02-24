@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "GameplayTagContainer.h"
+#include "Components/RadarComponent.h"
 #include "Logging/LogMacros.h"
 #include "StarfallCharacter.generated.h"
 
@@ -15,6 +16,9 @@ class UInputAction;
 struct FInputActionValue;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnCharacterMovedDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnCharacterLookedDelegate);
 
 UCLASS(config=Game)
 class AStarfallCharacter : public ACharacter
@@ -37,6 +41,10 @@ class AStarfallCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* JumpAction;
 
+	/** Jump Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* GrenadeAction;
+
 	/** Move Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* MoveAction;
@@ -56,7 +64,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Props")
 	FGameplayTag MyTag;
 	
-
+	FOnCharacterMovedDelegate OnCharacterMoved;
+	FOnCharacterLookedDelegate OnCharacterLooked;
 protected:
 
 	/** Called for movement input */
@@ -73,10 +82,25 @@ protected:
 	// To add mapping context
 	virtual void BeginPlay();
 
+
+
+	UPROPERTY()
+	class UAbilitySystemComponent* AbilitySystemComponent; // Ability System Component reference
+
+
+
+
 public:
 	//	/** Returns CameraBoom subobject **/
 	//	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	//	/** Returns FollowCamera subobject **/
 	//	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+	void SetupAbilitySystem();
+	void ThrowGrenade();
+
+
+
+
+
 };
 
