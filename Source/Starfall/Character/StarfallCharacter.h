@@ -15,8 +15,15 @@ class UInputMappingContext;
 class UInputAction;
 struct FInputActionValue;
 
-DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
+
+//	DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
+
+//	POSSESSION	-----
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnPawnPossessedDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnPawnUnPossessedDelegate);
+
+//	----
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnCharacterMovedDelegate);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnCharacterLookedDelegate);
 
@@ -24,34 +31,6 @@ UCLASS(config=Game)
 class AStarfallCharacter : public ACharacter
 {
 	GENERATED_BODY()
-
-	//	/** Camera boom positioning the camera behind the character */
-	//	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	//	USpringArmComponent* CameraBoom;
-	//	
-	//	/** Follow camera */
-	//	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	//	UCameraComponent* FollowCamera;
-	
-	/** MappingContext */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputMappingContext* DefaultMappingContext;
-
-	/** Jump Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* JumpAction;
-
-	/** Jump Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* GrenadeAction;
-
-	/** Move Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* MoveAction;
-
-	/** Look Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* LookAction;
 
 public:
 	AStarfallCharacter();
@@ -64,28 +43,33 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Props")
 	FGameplayTag MyTag;
 	
+
+	FOnPawnPossessedDelegate OnPawnPossessed;
+	FOnPawnUnPossessedDelegate OnPawnUnPossessed;
 	FOnCharacterMovedDelegate OnCharacterMoved;
 	FOnCharacterLookedDelegate OnCharacterLooked;
 protected:
 
 	/** Called for movement input */
-	void Move(const FInputActionValue& Value);
+	void Move(FVector2D Value);
+	void Look(FVector2D Value);
 
 	/** Called for looking input */
-	void Look(const FInputActionValue& Value);
 			
-
-protected:
-	// APawn interface
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	//	APawn interface
+	//	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	
 	// To add mapping context
 	virtual void BeginPlay();
 
 
+	virtual void UnPossessed() override;
+	virtual void PossessedBy(AController* NewController) override;
 
-	UPROPERTY()
-	class UAbilitySystemComponent* AbilitySystemComponent; // Ability System Component reference
+
+
+	//	UPROPERTY()
+	//	class UAbilitySystemComponent* AbilitySystemComponent; // Ability System Component reference
 
 
 
@@ -95,12 +79,7 @@ public:
 	//	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	//	/** Returns FollowCamera subobject **/
 	//	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
-	void SetupAbilitySystem();
-	void ThrowGrenade();
-
-
-
-
-
+	//	void SetupAbilitySystem();
+	//	void ThrowGrenade();
 };
 
