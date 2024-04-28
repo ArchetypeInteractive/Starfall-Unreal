@@ -2,27 +2,28 @@
 
 #include "StarfallCharacter.h"
 #include "Engine/LocalPlayer.h"
-#include "Camera/CameraComponent.h"
-#include "AbilitySystemComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/Controller.h"
-#include "EnhancedInputComponent.h"
-#include "EnhancedInputSubsystems.h"
-#include "InputActionValue.h"
-#include "GameplayAbilities/Grenade.h"
 
 //	DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
 //////////////////////////////////////////////////////////////////////////
 // AStarfallCharacter
 
-AStarfallCharacter::AStarfallCharacter()
+AStarfallCharacter::AStarfallCharacter(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer.SetDefaultSubobjectClass<UStarfallMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 	//	AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
+
+
+
+	// Create and assign the custom movement component
+	//	StarfallMovementComponent = CreateDefaultSubobject<UStarfallMovementComponent>(TEXT("CustomMovementComp"));
+	//	Set this as the character's primary movement component
+	//	Super::SetMovementComponent(StarfallMovementComponent);
 
 
 	// Configure character movement
@@ -37,6 +38,7 @@ AStarfallCharacter::AStarfallCharacter()
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
 	GetCharacterMovement()->BrakingDecelerationFalling = 1500.0f;
+	GetCharacterMovement()->CrouchedHalfHeight = 50.f;
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
@@ -54,32 +56,6 @@ void AStarfallCharacter::BeginPlay()
 	//	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// Input
-/*
-void AStarfallCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	//	Set up action bindings
-	//	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent)) {
-	//		
-	//		// Jumping
-	//		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacter::Jump);
-	//		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
-	//	
-	//		// Moving
-	//		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AStarfallCharacter::Move);
-	//	
-	//		// Looking
-	//		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AStarfallCharacter::Look);
-	//		
-	//		EnhancedInputComponent->BindAction(GrenadeAction, ETriggerEvent::Started, this, &AStarfallCharacter::ThrowGrenade);
-	//	}
-	//	else
-	//	{
-	//		UE_LOG(LogTemplateCharacter, Error, TEXT("'%s' Failed to find an Enhanced Input component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
-	//	}
-}
-*/
 
 void AStarfallCharacter::Move(FVector2D Value)
 {
@@ -112,13 +88,48 @@ void AStarfallCharacter::Look(FVector2D Value)
 	if (Controller != nullptr)
 	{
 		// add yaw and pitch input to controller
-		AddControllerYawInput(Value.X);
-		AddControllerPitchInput(Value.Y);
+		Yaw = Value.X;
+		Pitch = Value.Y;
+		AddControllerYawInput(Value.X * 2);
+		AddControllerPitchInput(Value.Y * 2);
 
 		//	------------
 		OnCharacterLooked.Broadcast();
 	}
 }
+
+
+
+void AStarfallCharacter::Jump()
+{
+	Super::Jump();
+	UE_LOG(LogTemp, Warning, TEXT("Character is jumping"))
+		//	OnCharacterStoppedJumping.Broadcast();
+}
+void AStarfallCharacter::StopJumping()
+{
+	Super::StopJumping();
+	UE_LOG(LogTemp, Warning, TEXT("Character stopped jumping"))
+	//	OnCharacterStoppedJumping.Broadcast();
+}
+
+
+void AStarfallCharacter::Sprint()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Sprinting"))
+	//	OnCharacterSprinted.Broadcast();
+}
+
+
+void AStarfallCharacter::StopSprinting()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Stopped Sprinting"))
+}
+
+
+
+void AStarfallCharacter::Crouch() { GetCharacterMovement()->Crouch(true); }
+void AStarfallCharacter::UnCrouch() { GetCharacterMovement()->UnCrouch(true); }
 
 
 
@@ -143,30 +154,3 @@ void AStarfallCharacter::UnPossessed()
 
 	OnPawnUnPossessed.Broadcast();
 }
-
-
-/*
-void AStarfallCharacter::SetupAbilitySystem()
-{
-	if (AbilitySystemComponent)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Setting up ability system!"))
-		//	// Set up ability system component replication
-		//	AbilitySystemComponent->SetIsReplicated(true);
-		//	AbilitySystemComponent->InitAbilityActorInfo(this, this);
-	}
-	else {
-		UE_LOG(LogTemp, Error, TEXT("No ability system"))
-	}
-}
-
-
-void AStarfallCharacter::ThrowGrenade()
-{
-	if (AbilitySystemComponent)
-	{
-		//	if (UGameplayAbility* Grenade = UGameplayAbility::StaticClass()->GetDefaultObject<UGrenade>())
-		UE_LOG(LogTemp, Display, TEXT("Throwing Grenade!"));
-	}
-}
-*/

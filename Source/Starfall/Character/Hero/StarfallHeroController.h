@@ -7,10 +7,17 @@
 #include "GameFramework/PlayerController.h"
 #include "EnhancedInputSubsystemInterface.h"
 #include <EnhancedInputSubsystems.h>
+#include <EnhancedInputComponent.h>
+#include "CommonUserWidget.h"
+#include <Starfall/Game/Instance/UI/UserInterfaceSubsystem.h>
 #include "StarfallHeroController.generated.h"
 
 //	----------------------------
 
+
+
+// In StarfallHeroController.h
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FControllerReadyDelegate);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPawnStatusChangeDelegate);
 
 //	----------------------------
@@ -29,6 +36,7 @@ protected:
 public:
 	AStarfallHeroController();
 	FPawnStatusChangeDelegate PawnStatusChange;
+	FControllerReadyDelegate OnControllerReady;
 
 
 	void NotifyPossessionChanging() {
@@ -55,36 +63,23 @@ public:
 	UInputMappingContext* UIContext;
 
 
-	/** Jump Input Action */
-	/** Move Input Action */
-	/** Look Input Action 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* JumpAction;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* MoveAction;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* LookAction;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* AimAction;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* WeaponAction;
-	*/
-	
-
-
 	//	----------------------------
 
 
-	void Look(const FInputActionValue& Value);
-	void Move(const FInputActionValue& Value);
+	//	void Look(const FInputActionValue& Value);
+	//	void Move(const FInputActionValue& Value);
 
 
 	void SetMappingContext(UInputMappingContext* Context);
 
 	//	void SetEnhancedInputComponent(UEnhancedInputComponent* EnhancedInputComponent);
 	UEnhancedInputComponent* GetEnhancedInputComponent() const { return EnhancedInputComponent; };
+
+
+	//	Our Stack defines the foundation of our User Interface
+
+	UUserInterfaceSubsystem* UISubsystem;
+
+	UPROPERTY(BlueprintReadOnly)
+	UUserInterfaceWindow* UIWidget;
 };

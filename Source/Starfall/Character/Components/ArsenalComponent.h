@@ -4,9 +4,24 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "Starfall/Character/StarfallCharacter.h"
-#include "Starfall/Weapon/StarfallWeapon.h"
+#include "AbilitySystemComponent.h"
+#include <Starfall/Character/GameplayAbilities/StarfallWeaponAbility.h>
 #include "ArsenalComponent.generated.h"
+
+
+
+
+
+UENUM(BlueprintType)
+enum EWeaponSlots
+{
+	Primary		UMETA(DisplayName = "Primary"),
+	Special		UMETA(DisplayName = "Special"),
+	Heavy		UMETA(DisplayName = "Heavy")
+};
+
+
+
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -22,28 +37,49 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-	UPROPERTY(EditAnywhere, Category = "Input")
-	UInputMappingContext* WeaponInputContext;
+	//	UPROPERTY(EditAnywhere, Category = "Input")
+	//	UInputMappingContext* WeaponInputContext;
+	//	
+	//	UPROPERTY(EditAnywhere, Category = "Input")
+	//	UInputAction* AimAction;
+	//	
+	//	UPROPERTY(EditAnywhere, Category = "Input")
+	//	UInputAction* FireAction;
 
-	UPROPERTY(EditAnywhere, Category = "Input")
-	UInputAction* AimAction;
 
-	UPROPERTY(EditAnywhere, Category = "Input")
-	UInputAction* FireAction;
 
 public:	
 	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	//	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Properties")
-	TSubclassOf<AStarfallWeapon> Weapon;
-
-
+	//	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Properties")
+	//	TSubclassOf<AStarfallWeapon> Weapon;
 
 
+	UAbilitySystemComponent* AbilitySystem;
 
-	void Aim(const FInputActionValue& Value);
-	void Fire(const FInputActionValue& Value);
+	void SetAbilitySystemComponent(UAbilitySystemComponent* AbilitySystemComponent) { AbilitySystem = AbilitySystemComponent; };
 
-	AStarfallWeapon* GetActiveWeapon() const { return Cast<AStarfallWeapon>(Weapon); }
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<UStarfallWeaponAbility> PrimaryWeapon;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<UStarfallWeaponAbility> SpecialWeapon;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<UStarfallWeaponAbility> HeavyWeapon;
+
+
+	void SwitchWeapon(EWeaponSlots* Slot);
+
+
+
+	UGameplayAbility* Ability;
+
+	//	void Aim(const FInputActionValue& Value);
+	//	void Fire(const FInputActionValue& Value);
+
+	//	AStarfallWeapon* GetActiveWeapon() const { return Cast<AStarfallWeapon>(Weapon); }
 };

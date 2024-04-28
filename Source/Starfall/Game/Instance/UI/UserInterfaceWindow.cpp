@@ -3,131 +3,60 @@
 
 #include "UserInterfaceWindow.h"
 #include "Components/OverlaySlot.h"
-
+#include <Components/SizeBox.h>
 
 
 UUserInterfaceWindow::UUserInterfaceWindow(const FObjectInitializer& ObjectInitializer)
+    : Super(ObjectInitializer)
 {
-	UE_LOG(LogTemp, Display, TEXT("User Interface Window class"))
+	UE_LOG(LogTemp, Error, TEXT("SETTING UP OUR UI WINDOW!! OMGG"))
+
+
+    //  Can we run Add UI Layers here as part of this component's set up?
 }
 
-
-void UUserInterfaceWindow::RegisterLayer(UCommonActivatableWidgetStack* Layer, FGameplayTag Tag)
-{
-
-	UE_LOG(LogTemp, Warning, TEXT("Registering layer with tag: %s"), *Tag.ToString());
-	if (!Layer) return;		//	If layer is invalid, exit early
-	
-	if (!UITagContainer.HasTag(Tag))
-	{
-		FUIWidgetLayer NewRegistration;
-		NewRegistration.Layer = Layer;
-		NewRegistration.Tag = Tag;
-		UILayers.Add(NewRegistration);
-
-		//	------------------------
-
-		UITagContainer.AddTag(Tag);
-	}
-}
 
 void UUserInterfaceWindow::NativeConstruct()
 {
-	Super::NativeConstruct();
-
-	// Use RootWidget as needed
+    Super::NativeConstruct();
 
 
-	/*
-	//	Create and set MainOverlay as the RootWidget
-	MainOverlay = WidgetTree->ConstructWidget<UOverlay>(UOverlay::StaticClass());
-	MainOverlay->SetVisibility(ESlateVisibility::Visible);
-	MainOverlay->bIsEnabled = true;
-	WidgetTree->RootWidget = MainOverlay;
-
-
-	//	Create MenuLayer and add it to MainOverlay
-	MenuLayer = WidgetTree->ConstructWidget<UCommonActivatableWidgetStack>(UCommonActivatableWidgetStack::StaticClass());
-	MenuLayer->SetVisibility(ESlateVisibility::Visible);
-	UOverlaySlot* MenuSlot = Cast<UOverlaySlot>(MainOverlay->AddChildToOverlay(MenuLayer));
-	MenuSlot->SetHorizontalAlignment(HAlign_Fill);
-	MenuSlot->SetVerticalAlignment(VAlign_Fill);
-	RegisterLayer(MenuLayer, FGameplayTag::RequestGameplayTag(FName("UI.Layer.Menu")));
-
-
-	GameMenuLayer = WidgetTree->ConstructWidget<UCommonActivatableWidgetStack>(UCommonActivatableWidgetStack::StaticClass());
-	UOverlaySlot* GameMenuSlot = Cast<UOverlaySlot>(MainOverlay->AddChildToOverlay(GameMenuLayer));
-	if (GameMenuSlot)
-	{
-		GameMenuSlot->SetHorizontalAlignment(HAlign_Fill);
-		GameMenuSlot->SetVerticalAlignment(VAlign_Fill);
-		RegisterLayer(GameMenuLayer, FGameplayTag::RequestGameplayTag(FName("UI.Layer.GameMenu")));
-	}
-
-
-	ModalLayer = WidgetTree->ConstructWidget<UCommonActivatableWidgetStack>(UCommonActivatableWidgetStack::StaticClass());
-	UOverlaySlot* ModalSlot = Cast<UOverlaySlot>(MainOverlay->AddChildToOverlay(ModalLayer));
-	if (ModalSlot)
-	{
-		ModalSlot->SetHorizontalAlignment(HAlign_Fill);
-		ModalSlot->SetVerticalAlignment(VAlign_Fill);
-		RegisterLayer(ModalLayer, FGameplayTag::RequestGameplayTag(FName("UI.Layer.Modal")));
-	}
-
-
-
-	GameLayer = WidgetTree->ConstructWidget<UCommonActivatableWidgetStack>(UCommonActivatableWidgetStack::StaticClass());
-	UOverlaySlot* GameSlot = Cast<UOverlaySlot>(MainOverlay->AddChildToOverlay(GameLayer));
-	if (GameSlot)
-	{
-		GameSlot->SetHorizontalAlignment(HAlign_Fill);
-		GameSlot->SetVerticalAlignment(VAlign_Fill);
-		RegisterLayer(GameLayer, FGameplayTag::RequestGameplayTag(FName("UI.Layer.Game")));
-	}
-
-
-
-	//	MenuLayer = WidgetTree->ConstructWidget<UCommonActivatableWidgetStack>(UCommonActivatableWidgetStack::StaticClass());
-	//	//	UOverlaySlot* Slot = Cast<UOverlaySlot>(MainOverlay->AddChildToOverlay(MenuLayer));
-	//	UOverlaySlot* MenuSlot = Cast<UOverlaySlot>(MainOverlay->AddChildToOverlay());
-	//	MainOverlay->AddChild(MenuLayer);
+    // Initialize MainOverlay
+    MainOverlay = WidgetTree->ConstructWidget<UOverlay>(UOverlay::StaticClass());
+    if (!MainOverlay) {
+        UE_LOG(LogTemp, Error, TEXT("Failed to create MainOverlay"));
+        return;
+    }
+    WidgetTree->RootWidget = MainOverlay;
+    MainOverlay->SetVisibility(ESlateVisibility::Visible);  // Make sure it's visible
 
 
 
 
+    // Create and configure a TextBlock for testing visibility
+    UTextBlock* TestTextBlock = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass(), FName("TestTextBlock"));
+    if (TestTextBlock)
+    {
+        TestTextBlock->SetText(FText::FromString("Test Visible"));
+        TestTextBlock->SetColorAndOpacity(FSlateColor(FLinearColor::Green));
+        TestTextBlock->SetFont(FSlateFontInfo(FPaths::EngineContentDir() / TEXT("Slate/Fonts/Roboto-Regular.ttf"), 24));
+
+        UOverlaySlot* TextSlot = MainOverlay->AddChildToOverlay(TestTextBlock);
+        if (TextSlot)
+        {
+            TextSlot->SetHorizontalAlignment(HAlign_Center);
+            TextSlot->SetVerticalAlignment(VAlign_Center);
+        }
+    }
 
 
 
 
+    // Attempt to add UI layers
+    AddUILayer(UCommonActivatableWidgetStack::StaticClass(), FName("UI.Layer.Menu"));
 
-
-	//	MenuLayer->SetVisibility(ESlateVisibility::Visible);
-
-
-
-	//	GameMenuLayer = WidgetTree->ConstructWidget<UCommonActivatableWidgetStack>(UCommonActivatableWidgetStack::StaticClass());
-	//	
-	//	ModalLayer = WidgetTree->ConstructWidget<UCommonActivatableWidgetStack>(UCommonActivatableWidgetStack::StaticClass());
-	//	
-	//	GameLayer = WidgetTree->ConstructWidget<UCommonActivatableWidgetStack>(UCommonActivatableWidgetStack::StaticClass());
-	//	
-
-
-	//	Create a new StackBox widget
-	//	UStackBox* StackBox = WidgetTree->ConstructWidget<UStackBox>(UStackBox::StaticClass());
-	//	UTextBlock* TextBlock1 = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass());
-	//	TextBlock1->SetText(FText::FromString(TEXT("STARFALL BETA")));
-	//	TextBlock1->SetFont(FSlateFontInfo(TEXT("/Engine/EngineFonts/Roboto.Roboto"), 12));
-	//	StackBox->AddChild(TextBlock1); // Add to stack box
-	//	StackBox->SetVisibility(ESlateVisibility::Visible);
-
-
-
-
-	LogWidgetHierarchy(WidgetTree->RootWidget, Depth);
-	*/
+    UE_LOG(LogTemp, Warning, TEXT("UI layers added and registered"));
 }
-
 
 
 
@@ -153,4 +82,95 @@ void UUserInterfaceWindow::LogWidgetHierarchy(UWidget* Widget, int32 LocalDepth)
 			LogWidgetHierarchy(Panel->GetChildAt(i), Depth + 1);
 		}
 	}
+}
+
+
+
+//  ----------------
+//  SCOPED UTIL FNs
+//  ----------------
+UOverlaySlot* UUserInterfaceWindow::AddUILayer(TSubclassOf<UCommonActivatableWidgetStack> WidgetClass, const FName& LayerTag)
+{
+    if (!WidgetTree || !MainOverlay) {
+        UE_LOG(LogTemp, Error, TEXT("WidgetTree or MainOverlay is null."));
+        return nullptr;
+    }
+
+    // Create and add the ActivatableWidgetStack directly to the MainOverlay
+    UCommonActivatableWidgetStack* Layer = WidgetTree->ConstructWidget<UCommonActivatableWidgetStack>(WidgetClass);
+    if (!Layer) {
+        UE_LOG(LogTemp, Error, TEXT("Failed to construct widget layer."));
+        return nullptr;
+    }
+
+    UOverlaySlot* LayerSlot = Cast<UOverlaySlot>(MainOverlay->AddChildToOverlay(Layer));
+    if (LayerSlot)
+    {
+        LayerSlot->SetHorizontalAlignment(HAlign_Fill);
+        LayerSlot->SetVerticalAlignment(VAlign_Fill);
+    }
+
+    // Ensure layer is visible
+    Layer->SetVisibility(ESlateVisibility::Visible);
+
+    // Register the layer with a gameplay tag
+    RegisterUILayer(Layer, FGameplayTag::RequestGameplayTag(LayerTag));
+
+    UE_LOG(LogTemp, Log, TEXT("Layer added to MainOverlay successfully with tag: %s"), *LayerTag.ToString());
+    return LayerSlot; // Return the Overlay slot containing the Layer
+}
+
+
+
+
+
+
+
+
+
+
+void UUserInterfaceWindow::RegisterUILayer(UCommonActivatableWidgetStack* Layer, FGameplayTag Tag)
+{
+
+    UE_LOG(LogTemp, Warning, TEXT("Registering layer with tag: %s"), *Tag.ToString());
+    if (!Layer) return;		//	If layer is invalid, exit early
+
+
+    if (!UILayers.Find(Tag))
+    {
+        UILayers.Add(Tag, Layer);
+        if (!UITagContainer.HasTag(Tag)) { UITagContainer.AddTag(Tag); }
+    }
+
+}
+
+
+
+
+
+
+UCommonActivatableWidgetStack* UUserInterfaceWindow::GetUIWindowLayer(FGameplayTag Tag)
+{
+    UCommonActivatableWidgetStack** Layer = UILayers.Find(Tag);  // Find the layer by tag
+
+    //  return Layer
+    return nullptr;
+}
+
+
+
+
+
+void UUserInterfaceWindow::PushToLayer(FGameplayTag Tag, TSubclassOf<UUserWidget> WidgetClass)
+{
+    UCommonActivatableWidgetStack** LayerPtr = UILayers.Find(Tag);
+    if (LayerPtr)
+    {
+        UCommonActivatableWidgetStack* Layer = *LayerPtr;
+        if (Layer)
+        {
+            UE_LOG(LogTemp, Warning, TEXT("Pushing widget to layer!"))
+            //  Layer->PushWidget(Widget);
+        }
+    }
 }

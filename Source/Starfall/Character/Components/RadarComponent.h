@@ -32,66 +32,53 @@ public:
 
 
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class STARFALL_API URadarComponent : public UActorComponent
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
-public:	
-	// Sets default values for this component's properties
-	URadarComponent();
+public:
+    // Sets default values for this component's properties
+    URadarComponent();
 
+protected:
+    // Called when the game starts
+    virtual void BeginPlay() override;
 
-	UPROPERTY(EditAnywhere, BlueprintAssignable, Category = "Events")
-	FOnRadarStateChangedDelegate OnRadarStateChanged;
+public:
+    // Radar detection capsule
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Radar")
+    UCapsuleComponent* RadarCapsule;
 
+    // Detection radius
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Radar")
+    float DetectionRadius;
 
+    // Type of actor to detect
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Radar")
+    TSubclassOf<AActor> ActorToDetectClass;
 
+    // Array of tracked actors
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Radar")
+    TArray<FTrackedActorStruct> TrackedActors;
 
-	// Called when the game starts
-	virtual void BeginPlay() override;
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+    // Functions to handle overlap events
+    UFUNCTION()
+    void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
+    UFUNCTION()
+    void OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Radar", meta = (AllowPrivateAccess = "true"))
-	UCapsuleComponent* RadarCapsule;
+    // Function to update actor movement status
+    void UpdateActorMovementStatus(AActor* Actor, bool IsMoving);
 
-	// Current state of the radar
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Radar")
-	ERadarState RadarState = ERadarState::Standard;
+    // Blueprint functions to manipulate and access radar data
+    UFUNCTION(BlueprintCallable, Category = "Radar")
+    void AddTrackedActor(AActor* Actor, FGameplayTag Tag, int32 Quadrant);
 
+    UFUNCTION(BlueprintCallable, Category = "Radar")
+    void RemoveTrackedActor(AActor* Actor);
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Collision")
-	float Radius = 5000.f;
-
-	UFUNCTION()
-	void OnActorDetected(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
-	UFUNCTION()
-	void OnActorEndDetected(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-	
-	UFUNCTION()
-	void UpdateTrackedActorLocations();
-
-
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tags", meta = (AllowPrivateAccess = "true"))
-	FGameplayTag EnemyTag;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tags", meta = (AllowPrivateAccess = "true"))
-	FGameplayTag AllyTag;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tags", meta = (AllowPrivateAccess = "true"))
-	FGameplayTag ObjectiveTag;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Radar")
-	int32 NumQuadrants; 
-	int32 StandardQuadrantNum = 8;
-	int32 EnhancedQuadrantNum = 16;
-
-	UFUNCTION(BlueprintCallable, Category = "State")
-	void SetRadarState(ERadarState NewState);
-
-	TArray<FTrackedActorStruct> TrackedActors;
+    UFUNCTION(BlueprintCallable, Category = "Radar")
+    TArray<FTrackedActorStruct> GetTrackedActors() const;
 };

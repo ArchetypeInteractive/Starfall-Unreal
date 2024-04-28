@@ -3,7 +3,7 @@
 
 #include "StarfallVendorCharacter.h"
 
-AStarfallVendorCharacter::AStarfallVendorCharacter()
+AStarfallVendorCharacter::AStarfallVendorCharacter(const FObjectInitializer& ObjectInitializer) : AStarfallCharacter(ObjectInitializer)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Vendor spawned"))
 }

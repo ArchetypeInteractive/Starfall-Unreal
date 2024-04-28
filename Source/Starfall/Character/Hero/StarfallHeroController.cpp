@@ -3,30 +3,41 @@
 #include "EnhancedInputComponent.h"
 #include "StarfallHeroCharacter.h"
 
+
+
+
 AStarfallHeroController::AStarfallHeroController()
 {
     UE_LOG(LogTemp, Display, TEXT("Player controller stuff"));
+    bReplicates = true;
+
+    
 }
 
 
 void AStarfallHeroController::BeginPlay()
 {
     Super::BeginPlay();
+    OnControllerReady.Broadcast();
+    UE_LOG(LogTemp, Warning, TEXT("Controller available"))
+
+    UISubsystem = GetGameInstance()->GetSubsystem<UUserInterfaceSubsystem>();
+    if (UISubsystem)
+    {
+        UIWidget = UISubsystem->Mount();
+        //  UIWidget->AddToViewport();
+        UE_LOG(LogTemp, Warning, TEXT("UI Widget created and added to viewport"))
+    }
+
+    //  ----
 
     if (GetLocalPlayer())
     {
-        //  ----
         Subsystem = GetLocalPlayer()->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
-        UE_LOG(LogTemp, Display, TEXT("Testing here"));
-
-        if (Subsystem) { 
-            UE_LOG(LogTemp, Warning, TEXT("Subsystem found in Controller, what the hell"))
-            
-            
+        if (Subsystem) {
             if (UIContext != nullptr) { SwitchInputContext(UIContext, 0); }
-            
-            AStarfallCharacter* StarfallCharacter = Cast<AStarfallCharacter>(GetPawn());
 
+            AStarfallCharacter* StarfallCharacter = Cast<AStarfallCharacter>(GetPawn());
             if (StarfallCharacter)
             {
                 UE_LOG(LogTemp, Warning, TEXT("Testing character?"))
@@ -34,8 +45,7 @@ void AStarfallHeroController::BeginPlay()
                 StarfallCharacter->OnPawnUnPossessed.AddDynamic(this, &AStarfallHeroController::HandlePawnUnPossessed);
             }
         }
-        else
-        {
+        else {
             UE_LOG(LogTemp, Warning, TEXT("Subsystem not found."));
         }
     }
@@ -73,7 +83,6 @@ void AStarfallHeroController::SwitchInputContext(UInputMappingContext* NewContex
         }
     }
 }
-
 
 
 

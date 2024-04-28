@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
+#include "Starfall/Game/Instance/UI/UserInterfaceWindow.h"
 #include "StarfallGameInstance.generated.h"
 
 /**
@@ -17,6 +18,12 @@ class STARFALL_API UStarfallGameInstance : public UGameInstance
 public:
 	UStarfallGameInstance();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+	TSubclassOf<UUserInterfaceWindow> BlueprintWindowClass;
+
 
 	virtual void Init() override;
+	void NakamaSubsystem();
+
+	void UISubsystem();
 };

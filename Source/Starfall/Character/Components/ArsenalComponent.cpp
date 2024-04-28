@@ -2,6 +2,7 @@
 
 
 #include "ArsenalComponent.h"
+#include "AbilitySystemComponent.h"
 #include <Starfall/Character/Hero/StarfallHeroCharacter.h>
 #include <EnhancedInputComponent.h>
 
@@ -11,12 +12,57 @@ UArsenalComponent::UArsenalComponent()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = true;
-
+	//  PrimaryComponentTick.bCanEverTick = true;
+    this->bAutoActivate = true;
 	// ...
 }
 
 
+void UArsenalComponent::BeginPlay()
+{
+    Super::BeginPlay();
+    UE_LOG(LogTemp, Warning, TEXT("Arsenal Component begin play"))
+
+    AStarfallCharacter* Celestial = Cast<AStarfallCharacter>(GetOwner());
+    if (!Celestial)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Celestial not defined"))
+
+        if (!PrimaryWeapon) {
+            UE_LOG(LogTemp, Warning, TEXT("Primary weapon not defined"))
+        }
+    }
+
+    Cast<UStarfallWeaponAbility>(PrimaryWeapon)->SpawnWeapon(Cast<AStarfallCharacter>(GetOwner()));
+
+    //  AbilitySystem - Ability;
+}
+
+
+void UArsenalComponent::SwitchWeapon(EWeaponSlots* Slot)  //  SwitchWeapon(UStarfallWeaponAbility Weapon)
+{
+    UE_LOG(LogTemp, Warning, TEXT("Switching weapons!"))
+
+    //  1.  clear previously granted gameplay ability
+    //  AbilitySystem->ClearAbility();
+    //  Ability = nullptr;
+    //      a.  Broadcast event
+    // 
+    //  2.  play weapon swapping animation
+    // 
+    //  3.  grant new weapon's gameplay ability
+    //  
+}
+
+
+
+
+
+
+
+
+
+/*
 // Called when the game starts
 void UArsenalComponent::BeginPlay()
 {
@@ -34,7 +80,7 @@ void UArsenalComponent::BeginPlay()
                 //  We can probably move this stuff to AStarfallWeapon, to give each weapon the opportunity to override.
                 //  Downside would be that we'd have to specify each action for each weapon in each blueprint.
                 //  Could that be bypassed by just inheriting from BP_StarfallWeapon?
-                */
+                
                 AStarfallHeroController* OwnerController = Cast<AStarfallHeroController>(OwnerCharacter->GetController());
                 if (OwnerController)
                 {
@@ -51,12 +97,10 @@ void UArsenalComponent::BeginPlay()
                             EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Triggered, this, &UArsenalComponent::Aim);
                             EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, this, &UArsenalComponent::Fire);
                         }
-                        /*
                             else {
                                 UE_LOG(LogTemp, Error, TEXT("'%s' Failed to find an Enhanced Input component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
                             }
                         }
-                        */
                     
                 }
         }
@@ -119,6 +163,7 @@ void UArsenalComponent::Fire(const FInputActionValue& Value)
     UE_LOG(LogTemp, Warning, TEXT("Firing weapon"))
 }
 
+*/
 
 
 

@@ -1,53 +1,70 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "UserInterfaceSubsystem.h"
-#include "Starfall/Character/Hero/StarfallHeroController.h" // Adjust the include path to your player controller
+#include "Starfall/Character/Hero/StarfallHeroController.h"
 #include "Kismet/GameplayStatics.h"
 #include "Engine/World.h"
 #include "UObject/ConstructorHelpers.h"
 
 
+
 void UUserInterfaceSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
     Super::Initialize(Collection);
-    //  Attempt to bind to the player controller's initialized event
-    //  OnUIReadyToMount.AddDynamic(this, &UUserInterfaceSubsystem::OnLevelLoaded);
+    UE_LOG(LogTemp, Warning, TEXT("UI Subsystem init"))
+    
+    //  OnUIMountedSuccess.AddDynamic(this, &UUserInterfaceSubsystem::Display);
 }
 
-
-//  We call this function from our GameInstance, so our UI is created *AFTER* our world
-void UUserInterfaceSubsystem::CreateAndDisplayUI()
+UUserInterfaceWindow* UUserInterfaceSubsystem::Mount()
 {
-    UE_LOG(LogTemp, Display, TEXT("USERINTERFACE_SUBSYSTEM HAS DETECTED A PLAYER CONTROLLER"))
-    
-    
-    if (UIWindow != nullptr) return;    // If UIWindow has already been defined, SKIP
+    if (UIWindow) {
+        UE_LOG(LogTemp, Error, TEXT("UI Window already mounted"));
+        return UIWindow;
+    }
 
-
-    AStarfallHeroController* Controller = Cast<AStarfallHeroController>(GetGameInstance()->GetFirstLocalPlayerController(GetWorld()));
-    
-    UIWindow = CreateWidget<UUserInterfaceWindow>(Controller, UUserInterfaceWindow::StaticClass());
-
+    AStarfallHeroController* Controller = Cast<AStarfallHeroController>(UGameplayStatics::GetPlayerController(this, 0));
     if (Controller)
     {
-        //  Controller exists
-
+        UIWindow = CreateWidget<UUserInterfaceWindow>(Controller, UUserInterfaceWindow::StaticClass());
         if (UIWindow)
         {
-            UE_LOG(LogTemp, Display, TEXT("Setting up UI Window"));
-            UIWindow->AddToViewport();
-            OnWindowUILoadSuccess.Broadcast();
+            UIWindow->SetVisibility(ESlateVisibility::Visible); // Set visibility right after creation
+            OnUISuccess.Broadcast();
+            UE_LOG(LogTemp, Log, TEXT("UI Window successfully created and ready to mount"));
+            return UIWindow;
         }
-        else {
-            UE_LOG(LogTemp, Display, TEXT("Failed to set up UI Window"));
-            OnWindowUILoadError.Broadcast();
+        else
+        {
+            UE_LOG(LogTemp, Error, TEXT("Failed to create UI Window"));
+            OnUIError.Broadcast();
+            return nullptr;
         }
     }
+    else
+    {
+        UE_LOG(LogTemp, Error, TEXT("Player controller not found"));
+        OnUIError.Broadcast();
+        return nullptr;
+    }
 }
+//  ------------
 
 
-void UUserInterfaceSubsystem::UITestMethod()
+
+
+UCommonActivatableWidgetStack* UUserInterfaceSubsystem::GetUILayer(FGameplayTag Tag)
 {
-    UE_LOG(LogTemp, Display, TEXT("Testtttt"))
+    UCommonActivatableWidgetStack* LayerPtr = Cast<UUserInterfaceWindow>(UIWindow)->GetUIWindowLayer(Tag);
+    // GetUILayers.Find(Tag);  // Find the layer by tag
+
+    // Log the retrieval attempt
+    if (LayerPtr)
+    {
+        //  UE_LOG(LogTemp, Warning, TEXT("Layer found: %s"), *Tag.ToString());
+        return LayerPtr;  // Return the found layer
+    }
+    else
+    {
+        //  UE_LOG(LogTemp, Warning, TEXT("No layer found with tag: %s"), *Tag.ToString());
+        return nullptr;  // Return nullptr if not found
+    }
 }
